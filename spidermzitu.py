@@ -7,12 +7,15 @@ import os
 def getimg(baseurl, title):
     #baseurl是第一张图片地址,输入变量后，可以获取此组图片，保存在文件夹内
     #name = name
+    headers = {'User-Agent':"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1"}##浏览器请求头（大部分网站没有这个请求头会报错、请务必加上哦）
     html = requests.get(baseurl, headers=headers)
     html_Soup = BeautifulSoup(html.text, 'lxml')
     max_span = html_Soup.find('div', class_='pagenavi').find_all('span')[-2].get_text()
     path = title.replace('?', '_').replace(' ', '_')
-    if mkdir(path):
-        os.chdir("E:\mzitu\\"+path)
+    date = html_Soup.findAll('span')[2].text.replace(':','_').replace('发布于 ','').replace(' ','_') # 获取该页面的日期和时间
+    os.chdir("E:\mzitu\\")    
+    if mkdir(date+path):
+        os.chdir("E:\mzitu\\"+date+path)
         for page in range(1, int(max_span)+1): ##不知道为什么这么用的小哥儿去看看基础教程吧
             page_url = baseurl + '/' + str(page) ##同上
             #print(page_url)
